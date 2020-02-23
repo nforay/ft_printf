@@ -5,5 +5,5 @@
 int	main(void)
 {
 	printf("expected: |test%d\n", 2);
-	ft_printf("result:   |test%d\ntest%d\n%d\n", 2, 3, 4);
+	ft_printf("result:   |test%d\ntest%i\n%s%d%%\n%c\n", 2, 3, "test", 4, 'a');
 }

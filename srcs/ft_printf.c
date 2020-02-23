@@ -38,10 +38,25 @@ int		ft_printf(const char *format, ...)
 			i++;
 			continue;
 		}
-		if (format[i] && format[(i + 1)] == 'd')
+		if (format[i] && format[(i + 1 )] == '%')
+		{
+			ft_putchar_fd('%', 1);
+			i += 2;
+		}
+		if (format[i] && (format[(i + 1)] == 'd' || format[(i + 1)] == 'i'))
 		{
 			//args->d = (int)va_arg(params, int);
 			ft_putnbr_fd((int)va_arg(params, int), 1);
+			i += 2;
+		}
+		if (format[i] && format[(i + 1)] == 'c')
+		{
+			ft_putchar_fd((int)va_arg(params, int), 1);
+			i += 2;
+		}
+		if (format[i] && format[(i + 1)] == 's')
+		{
+			ft_putstr_fd((char*)va_arg(params, char*), 1);
 			i += 2;
 		}
 	}
