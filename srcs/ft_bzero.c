@@ -1,32 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/04 14:08:26 by nforay            #+#    #+#             */
-/*   Updated: 2020/02/22 16:17:32 by nforay           ###   ########.fr       */
+/*   Created: 2019/11/04 11:02:20 by nforay            #+#    #+#             */
+/*   Updated: 2020/02/01 16:20:06 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# include <stdarg.h>
-# include "libft.h"
-
-typedef struct		s_args
+void	ft_bzero(void *str, size_t len)
 {
-	char			c;
-	char			*s;
-	void			*p;
-	int				d;
-	int				i;
-	unsigned int	u;
-	char			*x;
-	char			*xcap;
-}					t_args;
+	size_t	pos;
 
-int					ft_printf(const char *format, ...);
-#endif
+	pos = 0;
+	while (pos < len)
+	{
+		((char*)str)[pos] = 0;
+		pos++;
+	}
+}

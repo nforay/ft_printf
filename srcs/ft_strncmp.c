@@ -1,32 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/04 14:08:26 by nforay            #+#    #+#             */
-/*   Updated: 2020/02/22 16:17:32 by nforay           ###   ########.fr       */
+/*   Created: 2019/11/04 10:20:54 by nforay            #+#    #+#             */
+/*   Updated: 2020/02/01 17:38:12 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# include <stdarg.h>
-# include "libft.h"
-
-typedef struct		s_args
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	char			c;
-	char			*s;
-	void			*p;
-	int				d;
-	int				i;
-	unsigned int	u;
-	char			*x;
-	char			*xcap;
-}					t_args;
+	unsigned int	i;
 
-int					ft_printf(const char *format, ...);
-#endif
+	if (!s1 || !s2)
+		return (0);
+	i = 0;
+	while (((s1[i] != '\0') || (s2[i] != '\0')) && (n > 0))
+	{
+		n--;
+		if (s1[i] == s2[i])
+			i++;
+		else
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+	}
+	return (0);
+}

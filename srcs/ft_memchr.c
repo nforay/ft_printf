@@ -1,32 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/04 14:08:26 by nforay            #+#    #+#             */
-/*   Updated: 2020/02/22 16:17:32 by nforay           ###   ########.fr       */
+/*   Created: 2019/11/04 18:13:19 by nforay            #+#    #+#             */
+/*   Updated: 2020/02/01 16:26:23 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# include <stdarg.h>
-# include "libft.h"
-
-typedef struct		s_args
+void	*ft_memchr(const void *s, int c, size_t n)
 {
-	char			c;
-	char			*s;
-	void			*p;
-	int				d;
-	int				i;
-	unsigned int	u;
-	char			*x;
-	char			*xcap;
-}					t_args;
+	size_t				i;
+	const unsigned char	*src;
 
-int					ft_printf(const char *format, ...);
-#endif
+	src = s;
+	i = 0;
+	while (i < n)
+	{
+		if (src[i] == (unsigned char)c)
+			return ((void *)&src[i]);
+		i++;
+	}
+	return (NULL);
+}

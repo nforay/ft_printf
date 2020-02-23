@@ -1,32 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/04 14:08:26 by nforay            #+#    #+#             */
-/*   Updated: 2020/02/22 16:17:32 by nforay           ###   ########.fr       */
+/*   Created: 2019/12/06 00:26:58 by nforay            #+#    #+#             */
+/*   Updated: 2020/02/01 16:27:02 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# include <stdarg.h>
-# include "libft.h"
-
-typedef struct		s_args
+t_list	*ft_lstnew(void *content)
 {
-	char			c;
-	char			*s;
-	void			*p;
-	int				d;
-	int				i;
-	unsigned int	u;
-	char			*x;
-	char			*xcap;
-}					t_args;
+	t_list	*new;
 
-int					ft_printf(const char *format, ...);
-#endif
+	if (!(new = malloc(sizeof(t_list))))
+		return (NULL);
+	if (!content)
+	{
+		new->content = NULL;
+		new->next = NULL;
+		return (new);
+	}
+	new->content = content;
+	new->next = NULL;
+	return (new);
+}

@@ -1,32 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/04 14:08:26 by nforay            #+#    #+#             */
-/*   Updated: 2020/02/22 16:17:32 by nforay           ###   ########.fr       */
+/*   Created: 2019/11/04 11:28:41 by nforay            #+#    #+#             */
+/*   Updated: 2020/02/01 16:30:22 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# include <stdarg.h>
-# include "libft.h"
-
-typedef struct		s_args
+void	*ft_calloc(size_t nmemb, size_t size)
 {
-	char			c;
-	char			*s;
-	void			*p;
-	int				d;
-	int				i;
-	unsigned int	u;
-	char			*x;
-	char			*xcap;
-}					t_args;
+	void	*ptr;
 
-int					ft_printf(const char *format, ...);
-#endif
+	if (!(ptr = malloc(nmemb * size)))
+		return (NULL);
+	ft_memset(ptr, 0, (nmemb * size));
+	return (ptr);
+}

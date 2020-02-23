@@ -1,51 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   ft_strstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/01/20 23:09:48 by nforay            #+#    #+#             */
-/*   Updated: 2020/02/23 18:52:15 by nforay           ###   ########.fr       */
+/*   Created: 2019/02/22 15:44:22 by nforay            #+#    #+#             */
+/*   Updated: 2020/02/22 15:45:54 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
 #include "libft.h"
 
-void	parse(const char c)
-{
-	(void) c;
-}
-
-int		ft_printf(const char *format, ...)
+char	*ft_strstr(const char *str, const char *to_find)
 {
 	size_t	i;
 	size_t	j;
-	//t_args	*args;
 
-	va_list params;
-	va_start(params, format);
+	if (!str)
+		return (NULL);
 	i = 0;
-	j = 0;
-	//args = NULL;
-	while (format[i])
+	if (to_find[0] == '\0')
+		return ((char *)str);
+	while (str[i] != '\0')
 	{
-		if (format[i] != '%')
+		j = 0;
+		while (to_find[j] == str[i + j])
 		{
-			ft_putchar_fd(format[i], 1);
+			if (to_find[j + 1] == '\0')
+				return ((char *)str + i);
 			j++;
-			i++;
-			continue;
 		}
-		if (format[i] && format[(i + 1)] == 'd')
-		{
-			//args->d = (int)va_arg(params, int);
-			ft_putnbr_fd((int)va_arg(params, int), 1);
-			i += 2;
-		}
+		i++;
 	}
-	va_end(params);
-	return (j);
+	return (NULL);
 }
-

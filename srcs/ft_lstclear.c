@@ -1,32 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_lstclear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/04 14:08:26 by nforay            #+#    #+#             */
-/*   Updated: 2020/02/22 16:17:32 by nforay           ###   ########.fr       */
+/*   Created: 2019/12/06 02:16:46 by nforay            #+#    #+#             */
+/*   Updated: 2020/02/20 16:39:06 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+#include "libft.h"
 
-# include <stdarg.h>
-# include "libft.h"
-
-typedef struct		s_args
+void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
-	char			c;
-	char			*s;
-	void			*p;
-	int				d;
-	int				i;
-	unsigned int	u;
-	char			*x;
-	char			*xcap;
-}					t_args;
+	t_list	*tmp;
+	t_list	*ptr;
 
-int					ft_printf(const char *format, ...);
-#endif
+	if (!*lst || !del)
+		return ;
+	tmp = *lst;
+	while (tmp != NULL)
+	{
+		ptr = tmp->next;
+		del(tmp->content);
+		free(tmp);
+		tmp = ptr;
+	}
+	*lst = NULL;
+}
