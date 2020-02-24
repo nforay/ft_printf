@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/20 23:09:48 by nforay            #+#    #+#             */
-/*   Updated: 2020/02/23 18:52:15 by nforay           ###   ########.fr       */
+/*   Updated: 2020/02/24 11:21:50 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,12 @@ int		ft_printf(const char *format, ...)
 {
 	size_t	i;
 	size_t	j;
-	//t_args	*args;
+	t_args	args;
 
 	va_list params;
 	va_start(params, format);
 	i = 0;
 	j = 0;
-	//args = NULL;
 	while (format[i])
 	{
 		if (format[i] != '%')
@@ -45,18 +44,20 @@ int		ft_printf(const char *format, ...)
 		}
 		if (format[i] && (format[(i + 1)] == 'd' || format[(i + 1)] == 'i'))
 		{
-			//args->d = (int)va_arg(params, int);
-			ft_putnbr_fd((int)va_arg(params, int), 1);
+			args.d = (int)va_arg(params, int);
+			ft_putnbr_fd(args.d, 1);
 			i += 2;
 		}
 		if (format[i] && format[(i + 1)] == 'c')
 		{
-			ft_putchar_fd((int)va_arg(params, int), 1);
+			args.c = (int)va_arg(params, int);
+			ft_putchar_fd(args.c, 1);
 			i += 2;
 		}
 		if (format[i] && format[(i + 1)] == 's')
 		{
-			ft_putstr_fd((char*)va_arg(params, char*), 1);
+			args.s = (char*)va_arg(params, char*);
+			ft_putstr_fd(args.s, 1);
 			i += 2;
 		}
 	}
