@@ -1,10 +1,9 @@
 #ifndef MAIN_H
 # define MAIN_H
 
-# include <stdlib.h>
 # include <stdio.h>
-# include <strings.h>
 # include <stdarg.h>
+# include <stddef.h>
 
 enum	e_state
 {
@@ -14,6 +13,8 @@ enum	e_state
 	ERROR,
 	END
 };
+
+# define DEBUG		0
 
 # define FLAG_HH	"hh"
 # define FLAG_LL	"ll"
@@ -50,7 +51,7 @@ enum	e_state
 # define C_CONV		0x0001000
 # define S_CONV		0x0002000
 # define P_CONV		0x0004000
-# define D_CONV		0x0008000
+# define D_CONV		0x0008000			
 # define I_CONV		0x0010000
 # define U_CONV		0x0020000
 # define X_CONV		0x0040000
@@ -61,30 +62,67 @@ enum	e_state
 # define G_CONV		0x0800000
 # define E_CONV		0x1000000
 
-typedef struct		s_args
-{
-	char			c;
-	char			*s;
-	void			*p;
-	int				d;
-	int				i;
-	unsigned int	u;
-	char			*x;
-	char			*xmaj;
-}					t_args;
+/*
+	ajout		flag |= HH
+	enleve		flag &= ~HH
+​
+	test		if (flag & HH)
+*/
 
-typedef struct	s_state_machine
+typedef struct				s_args
 {
-	enum e_state	state;
-	char			buffer[4096];
-	int				len;
-	char			*out;
-	int				flag;
-	size_t			fwidth;
-	size_t			preci;
-	t_args			args;
-	va_list			params;
-}				t_state_machine;
+	int						c;
+	char					*s;
+	void					*p;
+	int						d;
+	int						i;
+	unsigned int			u;
+	unsigned int			x;
+	unsigned int			xmaj;
+	int						*n;
+	double					f;
+	double					g;
+	double					e;
+	signed char				hhd;
+	signed char				hhi;
+	unsigned char			hhu;
+	unsigned char			hhx;
+	unsigned char			hhxmaj;
+	signed char				*hhn;
+	long long int			lld;
+	long long int			lli;
+	unsigned long long int	llu;
+	unsigned long long int	llx;
+	unsigned long long int	llxmaj;
+	long long int			*lln;
+	short int				hd;
+	short int				hi;
+	unsigned short int		hu;
+	unsigned short int		hx;
+	unsigned short int		hxmaj;
+	short int				*hn;
+	wchar_t					lc;
+	wchar_t					*ls;
+	long int				ld;
+	long int				li;
+	unsigned long int		lu;
+	unsigned long int		lx;
+	unsigned long int		lxmaj;
+	long int				*ln;
+}							t_args;
+
+typedef struct				s_state_machine
+{
+	enum e_state			state;
+	char					buffer[4096];
+	int						len;
+	char					*out;
+	int						flag;
+	int						fwidth;
+	int						preci;
+	t_args					args;
+	va_list					params;
+}							t_state_machine;
 
 typedef int		(*t_function)(char *, t_state_machine *);
 

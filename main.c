@@ -26,6 +26,44 @@ int		error(char *input, t_state_machine *machine)
 	return (1);
 }
 
+void	print_conv(char c, t_state_machine *machine)				//cspdiuxX
+{
+	int	len;
+
+	if (machine->flag & (D_CONV | I_CONV))							//INTEGERS	d i
+	{
+		machine->args.d = (int)va_arg(machine->params, int);
+		ft_putnbr_fd(machine->args.d, 1);
+		if (DEBUG)
+			ft_putchar_fd('|', 1);
+		len = ft_strlen(ft_itoa(machine->args.d));
+		if ((machine->fwidth != 0) && (len < machine->fwidth))
+			machine->len += machine->fwidth;
+		else
+			machine->len += len;
+		machine->fwidth = 0;
+	}
+	else if (machine->flag & S_CONV)								//STRINGS	s
+	{
+		machine->args.s = (char *)va_arg(machine->params, char *);
+		if (machine->args.s == 0)
+			machine->args.s = "(null)";
+		len = ft_strlen(machine->args.s);
+			machine->len += len;
+		if (machine->fwidth > 0)
+		{
+			if ((machine->fwidth != 0) && (len < machine->fwidth))
+				{
+					len = (machine->fwidth - len);
+					machine->len += len;
+				}
+			while (len--)
+				ft_putchar_fd(' ', 1);
+		}
+		ft_putstr_fd(machine->args.s, 1);
+	}
+}
+
 int		conv(char *input, t_state_machine *machine)
 {
 	static char	*str_conv = ALLCONV;
@@ -36,20 +74,39 @@ int		conv(char *input, t_state_machine *machine)
 	{
 		if (ft_strnequ(input, str_conv + i, 1) == TRUE)
 		{
-			printf("cur = '%c' | state = CONV\n", *input);
-			machine->flag |= (1 << i) << 8;
-/*
- * DO CONV
- * machine->args->d = (int)va_arg(machine->params, int);
- * */
+			machine->flag |= (1 << i) << 12;
+			print_conv(input[0], machine);  //DO CONV
+			if (DEBUG)
+				printf("cur = '%c' | state = CONV\n", *input);
 			machine->state = LETTER;
 			machine->flag = 0;
+			machine->preci = 0;
+			machine->fwidth = 0;
 			return (1);
 		}
 		i++;
 	}
 	machine->state = ERROR;
 	return (0);
+}
+
+void	extract_aste(t_state_machine *machine)
+{
+	if (machine->flag & POINT)
+		machine->preci = (int)va_arg(machine->params, int);
+	else
+		machine->fwidth = (int)va_arg(machine->params, int);
+	machine->flag &= ~ASTER;
+	if (DEBUG) {
+		if (machine->flag & POINT)
+		{
+			printf("Precision: %d\n", machine->preci);
+		}
+		else
+		{
+			printf("Field Width: %d\n", machine->fwidth);
+		}
+	}
 }
 
 int		flag(char *input, t_state_machine *machine)
@@ -66,20 +123,25 @@ int		flag(char *input, t_state_machine *machine)
 		size = i < 2 ? 2 : 1;
 		if (ft_strnequ(input, str_flag[i], size) == TRUE)
 		{
-			printf("cur = '%s' | state = FLAG\n", str_flag[i]);
+			if (DEBUG)
+				printf("cur = '%s' | state = FLAG\n", str_flag[i]);
 			machine->flag |= (1 << i);
+			if (machine->flag & ASTER)
+				extract_aste(machine);
 			return (size);
 		}
 		if (!(machine->flag & POINT) && (input[0] > '0' && input[0] <= '9')
 				&& (machine->fwidth = ft_atoi(input)))
 		{
-			printf("cur = '%ld' | state = FLAG | Field Width : len = %ld\n", machine->fwidth, ft_strlen(ft_itoa(machine->fwidth)));
+			if (DEBUG)
+				printf("Field Width : len = %d\n", machine->fwidth);
 			return (ft_strlen(ft_itoa(machine->fwidth)));
 		}
 		if ((machine->flag & POINT) && (input[0] >= '0' && input[0] <= '9')
 				&& (machine->preci = ft_atoi(input)))
 		{
-			printf("cur = '%ld' | state = FLAG | Precision : len = %ld\n", machine->preci, ft_strlen(ft_itoa(machine->preci)));
+			if (DEBUG)
+				printf("Precision : len = %d\n", machine->preci);
 			return (ft_strlen(ft_itoa(machine->preci)));
 		}
 		i++;
@@ -93,7 +155,7 @@ void	add_to_buff(char c, t_state_machine *machine)
 	if (machine->len == 4096)
 	{
 		machine->len = 0;
-		bzero(&machine->buffer, 4096);
+		ft_bzero(&machine->buffer, 4096);
 	}
 	machine->buffer[machine->len] = c;
 	machine->len++;
@@ -106,7 +168,11 @@ int		letter(char *input, t_state_machine *machine)
 	else
 	{
 		add_to_buff(*input, machine);
-		printf("cur = '%c' | state = LETTER\n", *input);
+		ft_putchar_fd(*input, 1);
+		if (DEBUG)
+			ft_putchar_fd('|', 1);
+		if (DEBUG)
+			printf("cur = '%c' | state = LETTER\n", *input);
 	}
 	return (1);
 }
@@ -121,21 +187,25 @@ int		ft_printf(char *format, ...)
 	machine.state = LETTER;
 	machine.len = 0;
 	machine.flag = 0;
-	bzero(&machine.buffer, 4096);
+	ft_bzero(&machine.buffer, 4096);
 	while (format != NULL && *format != '\0')
 	{
 		if ((ret = process[machine.state](format, &machine)) >= 0)
 			format += ret;
 	}
 	va_end(machine.params);
+	printf("DEBUG | ft_printf return = %d\n", machine.len);
 	return (machine.len);
 }
 
 int		main(int ac, char **av)
 {
+	int	pflen;
+
 	if (ac != 2)
 		return (EXIT_FAILURE);
-	ft_printf(av[1], 1, 1, 1);
-	printf("\ntest%0-15.64dlol", 0);
+	ft_printf(av[1], 10, 15, "hello\n");
+	pflen = printf(av[1], 10, 15, "hello\n");
+	printf("DEBUG | printf return = %d\n", pflen);
 	return (EXIT_SUCCESS);
 }
