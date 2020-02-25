@@ -19,13 +19,13 @@ enum	e_state
 # define FLAG_LL	"ll"
 # define FLAG_MINUS	"-"
 # define FLAG_ZERO	"0"
-# define FLAG_POINT	"."
 # define FLAG_ASTER	"*"
 # define FLAG_HASH	"#"
 # define FLAG_SPACE	" "
 # define FLAG_PLUS	"+"
 # define FLAG_H		"h"
 # define FLAG_L		"l"
+# define FLAG_POINT	"."
 
 # define ALLCONV	"cspdiuxX%nfge"
 
@@ -39,13 +39,13 @@ enum	e_state
 # define LL			0x000002
 # define MINUS		0x000004
 # define ZERO		0x000008
-# define POINT		0x000010
-# define ASTER		0x000020
-# define HASH		0x000040
-# define SPACE		0x000080
-# define PLUS		0x000100
-# define H			0x000200
-# define L			0x000400
+# define ASTER		0x000010
+# define HASH		0x000020
+# define SPACE		0x000040
+# define PLUS		0x000080
+# define H			0x000100
+# define L			0x000200
+# define POINT		0x000400
 
 # define C_CONV		0x0001000
 # define S_CONV		0x0002000
@@ -80,7 +80,10 @@ typedef struct	s_state_machine
 	int				len;
 	char			*out;
 	int				flag;
+	size_t			fwidth;
+	size_t			preci;
 	t_args			args;
+	va_list			params;
 }				t_state_machine;
 
 typedef int		(*t_function)(char *, t_state_machine *);
