@@ -16,17 +16,17 @@ enum	e_state
 
 # define DEBUG		0
 
-# define FLAG_HH	"hh"
-# define FLAG_LL	"ll"
-# define FLAG_MINUS	"-"
-# define FLAG_ZERO	"0"
-# define FLAG_ASTER	"*"
-# define FLAG_HASH	"#"
-# define FLAG_SPACE	" "
-# define FLAG_PLUS	"+"
-# define FLAG_H		"h"
-# define FLAG_L		"l"
-# define FLAG_POINT	"."
+# define F_HH		"hh"
+# define F_LL		"ll"
+# define F_MINUS	"-"
+# define F_ZERO		"0"
+# define F_ASTER	"*"
+# define F_HASH		"#"
+# define F_SPACE	" "
+# define F_PLUS		"+"
+# define F_H		"h"
+# define F_L		"l"
+# define F_POINT	"."
 
 # define ALLCONV	"cspdiuxX%nfge"
 
@@ -51,7 +51,7 @@ enum	e_state
 # define C_CONV		0x0001000
 # define S_CONV		0x0002000
 # define P_CONV		0x0004000
-# define D_CONV		0x0008000			
+# define D_CONV		0x0008000
 # define I_CONV		0x0010000
 # define U_CONV		0x0020000
 # define X_CONV		0x0040000
@@ -125,5 +125,14 @@ typedef struct				s_state_machine
 }							t_state_machine;
 
 typedef int		(*t_function)(char *, t_state_machine *);
+
+int		ft_printf(char *format, ...);
+void	extract_aste(t_state_machine *m);
+void	print_conv(char c, t_state_machine *m);
+void	print_conv_ptr(t_state_machine *m);
+void	print_conv_uns(t_state_machine *m);
+void	print_conv_chr(t_state_machine *m);
+void	print_conv_int(t_state_machine *m);
+void	print_conv_str(t_state_machine *m);
 
 #endif

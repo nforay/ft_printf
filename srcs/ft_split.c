@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/02 22:48:11 by nforay            #+#    #+#             */
-/*   Updated: 2020/02/02 11:03:01 by nforay           ###   ########.fr       */
+/*   Updated: 2020/02/27 19:16:31 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ char				**ft_split(char const *s, char c)
 	char	**splitted;
 	size_t	n;
 
-	if (!s || !c)
+	if (!s)
 		return (NULL);
 	if (!(splitted = ft_calloc(splitnbr(s, c) + 1, sizeof(splitted))))
 		return (NULL);
