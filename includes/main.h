@@ -73,7 +73,7 @@ typedef struct				s_args
 {
 	int						c;
 	char					*s;
-	void					*p;
+	unsigned long			p;
 	int						d;
 	int						i;
 	unsigned int			u;
@@ -118,7 +118,7 @@ typedef struct				s_state_machine
 	int						len;
 	char					*out;
 	int						flag;
-	int						fwidth;
+	size_t					fwidth;
 	int						preci;
 	t_args					args;
 	va_list					params;
@@ -128,7 +128,7 @@ typedef int		(*t_function)(char *, t_state_machine *);
 
 int		ft_printf(char *format, ...);
 void	extract_aste(t_state_machine *m);
-void	print_conv(char c, t_state_machine *m);
+void	print_conv(t_state_machine *m);
 void	print_conv_ptr(t_state_machine *m);
 void	print_conv_uns(t_state_machine *m);
 void	print_conv_chr(t_state_machine *m);

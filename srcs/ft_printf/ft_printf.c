@@ -3,10 +3,7 @@
 
 static int		error(char *input, t_state_machine *machine)
 {
-/*
- * DO ERROR CONV
- * */
-	printf("cur = '%c' | state = ERROR\n", *input);
+	(void)input;
 	machine->state = LETTER;
 	machine->flag = 0;
 	return (1);
@@ -23,9 +20,12 @@ static int		conv(char *input, t_state_machine *machine)
 		if (ft_strncmp(input, str_conv + i, 1) == FALSE)
 		{
 			machine->flag |= (1 << i) << 12;
-			print_conv(input[0], machine);								//DO CONV
-			if (DEBUG)
-				printf("cur = '%c' | state = CONV\n", *input);
+			print_conv(machine);
+			if (machine->flag & PER_CONV)
+			{
+				ft_putchar_fd('%', 1);
+				machine->len++;
+			}
 			machine->state = LETTER;
 			machine->flag = 0;
 			machine->preci = 0;
@@ -43,20 +43,16 @@ static int		flag(char *input, t_state_machine *machine)
 	static char	*str_flag[NB_FLAG] = {F_HH, F_LL, F_MINUS, F_ZERO,
 		F_ASTER, F_HASH, F_SPACE, F_PLUS, F_H, F_L, F_POINT};
 	int			i;
-	int			size;
 
 	i = 0;
 	while (i < NB_FLAG)
 	{
-		size = i < 2 ? 2 : 1;
-		if (ft_strncmp(input, str_flag[i], size) == FALSE)
+		if (ft_strncmp(input, str_flag[i], (i < 2 ? 2 : 1)) == FALSE)
 		{
-			if (DEBUG)
-				printf("cur = '%s' | state = FLAG\n", str_flag[i]);
 			machine->flag |= (1 << i);
 			if (machine->flag & ASTER)
 				extract_aste(machine);
-			return (size);
+			return (i < 2 ? 2 : 1);
 		}
 		if (!(machine->flag & POINT) && (input[0] > '0' && input[0] <= '9')
 				&& (machine->fwidth = ft_atoi(input)))
@@ -78,15 +74,11 @@ static int		letter(char *input, t_state_machine *machine)
 	{
 		ft_putchar_fd(*input, 1);
 		machine->len++;
-		if (DEBUG)
-			ft_putchar_fd('|', 1);
-		if (DEBUG)
-			printf("cur = '%c' | state = LETTER\n", *input);
 	}
 	return (1);
 }
 
-int		ft_printf(char *format, ...)
+int				ft_printf(char *format, ...)
 {
 	static t_function	process[4] = {letter, flag, conv, error};
 	t_state_machine		machine;
@@ -103,6 +95,5 @@ int		ft_printf(char *format, ...)
 			format += ret;
 	}
 	va_end(machine.params);
-	printf("DEBUG | ft_printf return = %d\n", machine.len);
 	return (machine.len);
 }

@@ -2,7 +2,11 @@ NAME	= libftprintf.a
 
 CC		= gcc
 
-CFLAGS	= -Wall -Wextra -Werror
+ifeq ($(DB),1)
+    CFLAGS	=  -g3 -Wall -Wextra -Werror
+else
+	CFLAGS	=  -Wall -Wextra -Werror
+endif
 
 INC		= includes
 
@@ -53,7 +57,9 @@ SRCS	=	srcs/ft_atoi.c \
 			srcs/ft_lstclear.c \
 			srcs/ft_lstiter.c \
 			srcs/ft_lstmap.c \
-			srcs/ft_strstr.c
+			srcs/ft_strstr.c \
+			srcs/ft_printf/ft_printf.c \
+			srcs/ft_printf/ft_printf_utils.c
 
 .c.o:
 	${CC} ${CFLAGS} -c $< -o ${<:.c=.o} -I ${INC}
