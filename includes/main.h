@@ -120,6 +120,7 @@ typedef struct				s_state_machine
 	int						flag;
 	int						fwidth;
 	int						preci;
+	int						fd;
 	t_args					args;
 	va_list					params;
 }							t_state_machine;
@@ -128,11 +129,13 @@ typedef int		(*t_function)(char *, t_state_machine *);
 
 int		ft_printf(char *format, ...);
 void	extract_aste(t_state_machine *m);
+void	print_perc(t_state_machine *m);
 void	print_conv(t_state_machine *m);
 void	print_conv_ptr(t_state_machine *m);
 void	print_conv_uns(t_state_machine *m);
 void	print_conv_chr(t_state_machine *m);
 void	print_conv_int(t_state_machine *m);
 void	print_conv_str(t_state_machine *m);
+int		intlen(int n, int len);
 
 #endif

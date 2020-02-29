@@ -21,11 +21,7 @@ static int		conv(char *input, t_state_machine *machine)
 		{
 			machine->flag |= (1 << i) << 12;
 			print_conv(machine);
-			if (machine->flag & PER_CONV)
-			{
-				ft_putchar_fd('%', 1);
-				machine->len++;
-			}
+			print_perc(machine);
 			machine->state = LETTER;
 			machine->flag = 0;
 			machine->preci = 0;
@@ -49,10 +45,10 @@ static int		flag(char *input, t_state_machine *machine)
 	{
 		if (!(machine->flag & POINT) && (input[0] > '0' && input[0] <= '9')
 				&& (machine->fwidth = ft_atoi(input)))
-			return (ft_strlen(ft_itoa(machine->fwidth)));
+			return (intlen(machine->fwidth, 0));
 		if ((machine->flag & POINT) && (ft_isdigit(input[0]))
 				&& (machine->preci = ft_atoi(input)))
-			return (ft_strlen(ft_itoa(machine->preci)));
+			return (intlen(machine->preci, 0));
 		if (ft_strncmp(input, str_flag[i], (i < 2 ? 2 : 1)) == FALSE)
 		{
 			machine->flag |= (1 << i);
@@ -85,6 +81,7 @@ int				ft_printf(char *format, ...)
 	int					ret;
 
 	va_start(machine.params, format);
+	machine.fd = 1;
 	machine.state = LETTER;
 	machine.len = 0;
 	machine.flag = 0;

@@ -6,8 +6,8 @@ int		main(void)
 	int	pflen;
 	int	ftpflen;
 
-	ftpflen = ft_printf("%-32.00s\n", "abc");
-	pflen = printf("%-32.00s\n", "abc");
+	ftpflen = ft_printf("%.6i\n", -3);
+	pflen = printf("%.6i\n", -3);
 	printf("DEBUG | ft_printf return = %d\n", ftpflen);
 	printf("DEBUG | printf return = %d\n", pflen);
 	//(void)pflen;
