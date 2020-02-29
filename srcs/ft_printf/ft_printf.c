@@ -47,6 +47,12 @@ static int		flag(char *input, t_state_machine *machine)
 	i = 0;
 	while (i < NB_FLAG)
 	{
+		if (!(machine->flag & POINT) && (input[0] > '0' && input[0] <= '9')
+				&& (machine->fwidth = ft_atoi(input)))
+			return (ft_strlen(ft_itoa(machine->fwidth)));
+		if ((machine->flag & POINT) && (ft_isdigit(input[0]))
+				&& (machine->preci = ft_atoi(input)))
+			return (ft_strlen(ft_itoa(machine->preci)));
 		if (ft_strncmp(input, str_flag[i], (i < 2 ? 2 : 1)) == FALSE)
 		{
 			machine->flag |= (1 << i);
@@ -54,12 +60,6 @@ static int		flag(char *input, t_state_machine *machine)
 				extract_aste(machine);
 			return (i < 2 ? 2 : 1);
 		}
-		if (!(machine->flag & POINT) && (input[0] > '0' && input[0] <= '9')
-				&& (machine->fwidth = ft_atoi(input)))
-			return (ft_strlen(ft_itoa(machine->fwidth)));
-		if ((machine->flag & POINT) && (ft_isdigit(input[0]))
-				&& (machine->preci = ft_atoi(input)))
-			return (ft_strlen(ft_itoa(machine->preci)));
 		i++;
 	}
 	machine->state = CONV;

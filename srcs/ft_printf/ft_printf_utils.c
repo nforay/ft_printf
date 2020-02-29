@@ -3,13 +3,20 @@
 
 void	print_width(t_state_machine *m)
 {
-	if (m->fwidth > 0)
+	if (m->fwidth)
 	{
-		if ((m->fwidth != 0) && (ft_strlen(m->args.s) < m->fwidth))
-			m->len += (m->fwidth - ft_strlen(m->args.s));
+		if ((m->flag & S_CONV) && m->args.s && ((int)ft_strlen(m->args.s) < m->fwidth))
+		{
+			if (m->flag & POINT)
+				m->fwidth = (m->fwidth - (m->preci < 0 ? 0 : 0)); //bad fix
+			else
+				m->fwidth = (m->fwidth - (int)ft_strlen(m->args.s));
+		}
+		else if (m->flag & C_CONV)
+			m->len += (m->fwidth - 1);
 		while (m->fwidth--)
 		{
-			ft_putchar_fd(' ', 1);
+			ft_putchar_fd(' ', 1); //m->flag & ZERO ? '0' : ' '
 			m->len++;
 		}
 	}
@@ -17,7 +24,7 @@ void	print_width(t_state_machine *m)
 
 void	print_conv(t_state_machine *m)
 {
-	if (m->flag & (MINUS + C_CONV))
+	if (!(m->flag & MINUS) && (m->flag & C_CONV))
 		print_width(m);
 	if (m->flag & C_CONV)
 		print_conv_chr(m);
@@ -33,12 +40,6 @@ void	print_conv(t_state_machine *m)
 
 void	ft_putnbr_base(t_state_machine *m, unsigned int nbr, char *base)
 {
-	if (nbr < 0)
-	{
-		nbr = nbr * -1;
-		ft_putchar_fd('-', 1);
-		m->len++;
-	}
 	if (nbr / 16 != 0)
 		ft_putnbr_base(m, (nbr / 16), base);
 	write(1, base + (nbr % 16), 1);
@@ -56,9 +57,10 @@ void	ft_put_pointer(t_state_machine *m, unsigned long nbr, char *base)
 void	print_conv_str(t_state_machine *m)
 {
 	m->args.s = (char *)va_arg(m->params, char *);
-	if (m->args.s == 0)
+	if (!(m->args.s))
 		m->args.s = "(null)";
-	print_width(m);
+	if (!(m->flag & MINUS) && (m->fwidth > 0))
+		print_width(m);
 	if (m->flag & POINT)
 		while (m->preci-- && *m->args.s)
 		{
@@ -66,7 +68,12 @@ void	print_conv_str(t_state_machine *m)
 			m->len++;
 		}
 	else
+	{
 		ft_putstr_fd(m->args.s, 1);
+		m->len += ft_strlen(m->args.s);
+	}
+	if ((m->flag & MINUS))
+		print_width(m);
 }
 
 void	print_conv_int(t_state_machine *m)
@@ -78,7 +85,7 @@ void	print_conv_int(t_state_machine *m)
 		return ;
 	ft_putnbr_fd(m->args.d, 1);
 	len = ft_strlen(ft_itoa(m->args.d));
-	if ((m->fwidth != 0) && (len < m->fwidth))
+	if ((m->fwidth != 0) && ((int)len < m->fwidth))
 		m->len += m->fwidth;
 	else
 		m->len += len;
@@ -119,6 +126,13 @@ void	extract_aste(t_state_machine *m)
 	if (m->flag & POINT)
 		m->preci = (int)va_arg(m->params, int);
 	else
+	{
 		m->fwidth = (int)va_arg(m->params, int);
+		if (m->fwidth < 0)
+			{
+				m->fwidth *= -1;
+				m->flag |= MINUS;
+			}
+	}
 	m->flag &= ~ASTER;
 }

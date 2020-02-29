@@ -118,7 +118,7 @@ typedef struct				s_state_machine
 	int						len;
 	char					*out;
 	int						flag;
-	size_t					fwidth;
+	int						fwidth;
 	int						preci;
 	t_args					args;
 	va_list					params;
