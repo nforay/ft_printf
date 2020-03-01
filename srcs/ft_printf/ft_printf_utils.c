@@ -72,12 +72,8 @@ void	print_perc(t_state_machine *m)
 {
 	if (m->flag & PER_CONV)
 	{
-		if (!(m->flag & MINUS))
-			print_width(m);
 		ft_putchar_fd('%', 1);
 		m->len++;
-		if (m->flag & MINUS)
-			print_width(m);
 	}
 }
 
@@ -99,8 +95,8 @@ void	print_conv(t_state_machine *m)
 
 int		ft_conv_base_len(int len, unsigned int nbr, char *base)
 {
-	if (nbr / 16 != 0)
-		len = (ft_conv_base_len(len, (nbr / 16), base));
+	if (nbr / ft_strlen(base) != 0)
+		len = (ft_conv_base_len(len, (nbr / ft_strlen(base)), base));
 	return (++len);
 }
 
@@ -181,11 +177,27 @@ void	print_width_uns(t_state_machine *m, int len)
 	int	written;
 
 	written = (m->preci >= len ? m->preci : len);
+	ft_putnbr_fd(written, 2);
 	while (m->fwidth > written)
 	{
 		ft_putchar_fd((m->flag & ZERO && !(m->flag & POINT)) ? '0' : ' ', 1);
 		m->len++;
 		written++;
+	}
+}
+
+void	ft_putunsnbr_fd(t_state_machine *m, unsigned int n, int fd)
+{
+	if (n <= 9)
+	{
+		ft_putchar_fd(n + 48, fd);
+		m->len++;
+	}
+	else
+	{
+		ft_putunsnbr_fd(m, n / 10, fd);
+		ft_putchar_fd(n % 10 + 48, fd);
+		m->len++;
 	}
 }
 
@@ -197,7 +209,7 @@ void	print_conv_uns(t_state_machine *m)
 	m->args.ux = (unsigned int)va_arg(m->params, unsigned int);
 	if (!(m->args.ux) && m->preci == 0 && m->flag & POINT && m->fwidth == 0)
 		return ;
-	strlen = ft_conv_base_len(0, m->args.ux, "0123456789abcdef");
+	strlen = ft_conv_base_len(0, m->args.ux, (m->flag & U_CONV) ? B_TEN : B_HEX);
 	if (!(m->flag & MINUS))
 			print_width_uns(m, strlen);
 	if (m->flag & HASH)
@@ -218,21 +230,46 @@ void	print_conv_uns(t_state_machine *m)
 		m->len++;
 	}
 	else if (m->flag & X_CONV)
-		ft_putnbr_base(m, m->args.ux, "0123456789abcdef");
+		ft_putnbr_base(m, m->args.ux, B_HEX);
 	else if (m->flag & XMAJ_CONV)
-		ft_putnbr_base(m, m->args.ux, "0123456789ABCDEF");
+		ft_putnbr_base(m, m->args.ux, B_MHEX);
 	else if (m->flag & U_CONV)
-		ft_putnbr_fd(m->args.ux, 1);
+		ft_putunsnbr_fd(m, m->args.ux, 1);
 	if (m->flag & MINUS)
 		print_width_uns(m, strlen);
 }
 
 void	print_conv_ptr(t_state_machine *m)
 {
+	int	strlen;
 	m->args.p = (unsigned long)va_arg(m->params, unsigned long);
+	if (m->args.p == 0)
+	{
+		ft_putstr_fd("(nil)", m->fd);
+		m->len += 5;
+		return ;
+	}
+	strlen = ft_conv_base_len(0, m->args.p, B_HEX);
+	if (!(m->flag & MINUS))
+	{
+		m->fwidth -= strlen + 2;
+		print_width(m);
+	}
 	ft_putstr_fd("0x", 1);
 	m->len += 2;
-	ft_put_pointer(m, m->args.p, "0123456789abcdef");
+	if (m->flag & POINT && strlen < m->preci)
+		while ((m->preci - strlen) > 0)
+		{
+			ft_putchar_fd('0', 1);
+			strlen++;
+			m->len++;
+		}
+	ft_put_pointer(m, m->args.p, B_HEX);
+	if (m->flag & MINUS)
+	{
+		m->fwidth -= strlen + 2;
+		print_width(m);
+	}
 }
 
 void	extract_aste(t_state_machine *m)

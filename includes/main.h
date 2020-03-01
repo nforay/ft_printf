@@ -30,6 +30,10 @@ enum	e_state
 
 # define ALLCONV	"cspdiuxX%nfge"
 
+# define B_TEN		"0123456789"
+# define B_HEX		"0123456789abcdef"
+# define B_MHEX		"0123456789ABCDEF"
+
 # define NB_FLAG	11
 # define NB_CONV	13
 
