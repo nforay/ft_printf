@@ -59,10 +59,10 @@ void	print_width(t_state_machine *m)
 		else if (m->flag & C_CONV)
 			m->len += (m->fwidth - 1);
 		else if (m->flag & PER_CONV)
-			m->fwidth--;
+			m->fwidth--; //--
 		while (m->fwidth > 0 && m->fwidth--)
 		{
-			ft_putchar_fd(m->flag & ZERO && !(m->flag & MINUS) ? '0' : ' ', 1);
+			ft_putchar_fd(m->flag & ZERO && (m->flag & (X_CONV + XMAJ_CONV)) && !(m->flag & MINUS) ? '0' : ' ', 1);
 			m->len++;
 		}
 	}
@@ -95,6 +95,13 @@ void	print_conv(t_state_machine *m)
 		print_conv_int(m);
 	else if (m->flag & (U_CONV | X_CONV | XMAJ_CONV))
 		print_conv_uns(m);
+}
+
+int		ft_conv_base_len(int len, unsigned int nbr, char *base)
+{
+	if (nbr / 16 != 0)
+		len = (ft_conv_base_len(len, (nbr / 16), base));
+	return (++len);
 }
 
 void	ft_putnbr_base(t_state_machine *m, unsigned int nbr, char *base)
@@ -169,20 +176,55 @@ void	print_conv_chr(t_state_machine *m)
 	m->len++;
 }
 
+void	print_width_uns(t_state_machine *m, int len)
+{
+	int	written;
+
+	written = (m->preci >= len ? m->preci : len);
+	while (m->fwidth > written)
+	{
+		ft_putchar_fd((m->flag & ZERO && !(m->flag & POINT)) ? '0' : ' ', 1);
+		m->len++;
+		written++;
+	}
+}
+
 void	print_conv_uns(t_state_machine *m)
 {
-	m->args.x = (unsigned int)va_arg(m->params, unsigned int);
+	int	strlen;
+
+	strlen = 0;
+	m->args.ux = (unsigned int)va_arg(m->params, unsigned int);
+	if (!(m->args.ux) && m->preci == 0 && m->flag & POINT && m->fwidth == 0)
+		return ;
+	strlen = ft_conv_base_len(0, m->args.ux, "0123456789abcdef");
+	if (!(m->flag & MINUS))
+			print_width_uns(m, strlen);
 	if (m->flag & HASH)
 	{
 		ft_putstr_fd("0x", 1);
 		m->len += 2;
 	}
-	if (m->flag & X_CONV)
-		ft_putnbr_base(m, m->args.x, "0123456789abcdef");
+	if (m->flag & POINT && strlen < m->preci)
+		while ((m->preci - strlen) > 0)
+		{
+			ft_putchar_fd('0', 1);
+			strlen++;
+			m->len++;
+		}
+	if (!(m->args.ux) && m->preci == 0 && m->flag & POINT)
+	{
+		ft_putchar_fd(' ', 1);
+		m->len++;
+	}
+	else if (m->flag & X_CONV)
+		ft_putnbr_base(m, m->args.ux, "0123456789abcdef");
 	else if (m->flag & XMAJ_CONV)
-		ft_putnbr_base(m, m->args.x, "0123456789ABCDEF");
-	else
-		ft_putnbr_fd(m->args.x, 1);
+		ft_putnbr_base(m, m->args.ux, "0123456789ABCDEF");
+	else if (m->flag & U_CONV)
+		ft_putnbr_fd(m->args.ux, 1);
+	if (m->flag & MINUS)
+		print_width_uns(m, strlen);
 }
 
 void	print_conv_ptr(t_state_machine *m)

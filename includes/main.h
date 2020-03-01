@@ -76,9 +76,7 @@ typedef struct				s_args
 	unsigned long			p;
 	int						d;
 	int						i;
-	unsigned int			u;
-	unsigned int			x;
-	unsigned int			xmaj;
+	unsigned int			ux;
 	int						*n;
 	double					f;
 	double					g;

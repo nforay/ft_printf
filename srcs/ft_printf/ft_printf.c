@@ -80,12 +80,13 @@ int				ft_printf(char *format, ...)
 	t_state_machine		machine;
 	int					ret;
 
+	ft_bzero(&machine, sizeof(machine));
 	va_start(machine.params, format);
 	machine.fd = 1;
 	machine.state = LETTER;
-	machine.len = 0;
-	machine.flag = 0;
-	ft_bzero(&machine.buffer, 4096);
+	//machine.len = 0;
+	//machine.flag = 0;
+	//ft_bzero(&machine.buffer, 4096);
 	while (format != NULL && *format != '\0')
 	{
 		if ((ret = process[machine.state](format, &machine)) >= 0)
