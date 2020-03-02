@@ -3,55 +3,110 @@
 
 int			intlen(int n, int len)
 {
-	if (n <= 0)
+	long	tmp;
+
+	tmp = (long)n;
+	if (tmp <= 0)
 	{
 		len++;
-		n = -n;
+		tmp = -tmp;
 	}
-	while (n)
+	while (tmp)
 	{
 		len++;
-		n /= 10;
+		tmp /= 10;
 	}
 	return (len);
 }
 
+void		print_int(int n, t_state_machine *m)
+{
+	if (n <= 9 && n >= 0)
+		ft_putchar_fd(n + 48, m->fd);
+		
+	else
+	{
+		print_int(n / 10, m);
+		ft_putchar_fd(n % 10 + 48, m->fd);
+	}
+}
+
 void		print_nbr_fd(int n, t_state_machine *m)
 {
+	int	written;
+	int	size;
+
+	written = 0;
+	size = intlen(m->args.d, 0);
+	while (m->fwidth && !(m->flag & (MINUS)) &&
+		m->fwidth-- - (size >= m->preci ? size : m->preci) > 0 )
+	{
+		ft_putchar_fd(n > 0 && m->flag & ZERO ? '0' : ' ', 1);
+		written++;
+	}
 	if (n == -2147483648)
 	{
 		write(m->fd, "-214748364", 10);
 		n = 8;
+		written += 10;
 	}
 	else if (n < 0)
 	{
 		ft_putchar_fd('-', m->fd);
 		n = -n;
 	}
+	while (m->fwidth && m->args.d > 0 && !(m->flag & MINUS) && (size > m->preci ? size : m->preci) < m->fwidth--)
+	{
+		ft_putchar_fd((m->flag & ZERO) ? '0' : ' ', 1);
+		written++;
+	}
 	while (m->preci && intlen(m->args.d, (m->args.d < 0 ? 0 : 1)) <= m->preci--)
 	{
 		ft_putchar_fd('0', 1);
+		written++;
+	}
+	m->len += written;
+	print_int(n, m);
+	while (m->fwidth && (m->flag & MINUS) && (size + written) < m->fwidth--)
+	{
+		ft_putchar_fd((m->flag & ZERO) ? '0' : ' ', 1);
 		m->len++;
 	}
-	if (n <= 9 && n >= 0)
-		ft_putchar_fd(n + 48, m->fd);
-	else
+}
+
+void	print_width_s_null(t_state_machine *m)
+{
+	int strlen;
+	
+	strlen = !(m->args.s) ? 6 : (int)ft_strlen(m->args.s);
+	(void)strlen;
+	if (!(m->flag & POINT))
+		m->fwidth -= 6;
+	else if ((m->flag & POINT) && m->preci > 5)
+		m->fwidth -= 6;
+	while (m->fwidth > 0 && m->fwidth-- )
 	{
-		print_nbr_fd(n / 10, m);
-		ft_putchar_fd(n % 10 + 48, m->fd);
+		ft_putchar_fd(' ', 1);
+		m->len++;
 	}
 }
 
 void	print_width(t_state_machine *m)
 {
+	int	strlen;
+
+	if ((m->flag & S_CONV) && !(m->args.s))
+		return (print_width_s_null(m));
+	if ((m->flag & S_CONV))
+		strlen = (int)ft_strlen(m->args.s);
 	if (m->fwidth)
 	{
-		if ((m->flag & S_CONV) && m->args.s && ((int)ft_strlen(m->args.s) <= m->fwidth))
-			if (m->flag & POINT && m->preci < (int)ft_strlen(m->args.s))
+		if ((m->flag & S_CONV) && (strlen <= m->fwidth))
+			if (m->flag & POINT && m->preci < strlen)
 				m->fwidth = (m->fwidth - m->preci);
 			else
-				m->fwidth = (m->fwidth - (int)ft_strlen(m->args.s));
-		else if ((m->flag & S_CONV) && m->args.s && ((int)ft_strlen(m->args.s) > m->fwidth))
+				m->fwidth = (m->fwidth - strlen);
+		else if ((m->flag & S_CONV) && (strlen > m->fwidth))
 			if (m->flag & POINT)
 				m->fwidth = (m->fwidth - m->preci);
 			else
@@ -119,11 +174,9 @@ void	ft_put_pointer(t_state_machine *m, unsigned long nbr, char *base)
 void	print_conv_str(t_state_machine *m)
 {
 	m->args.s = (char *)va_arg(m->params, char *);
-	if (!(m->args.s))
-		m->args.s = "(null)";
 	if (!(m->flag & MINUS) && (m->fwidth > 0))
 		print_width(m);
-	if (m->flag & POINT)
+	if (m->flag & POINT && m->args.s)
 		while (m->preci > 0 && m->preci-- && *m->args.s)
 		{
 			ft_putchar_fd(*m->args.s++, 1);
@@ -133,8 +186,16 @@ void	print_conv_str(t_state_machine *m)
 		}
 	else
 	{
+		if (!(m->args.s) && !((m->flag & POINT) && m->preci < 6))
+		{
+			m->args.s = "(null)";
+			m->len += 6;
+		}
+		else if (m->args.s)
+			m->len += ft_strlen(m->args.s);
+		else if (!(m->args.s) && !(m->flag & POINT))
+			m->args.s = "";
 		ft_putstr_fd(m->args.s, 1);
-		m->len += ft_strlen(m->args.s);
 	}
 	if (m->flag & MINUS)
 		print_width(m);
@@ -145,24 +206,11 @@ void	print_conv_int(t_state_machine *m)
 	size_t	len;
 
 	m->args.d = (int)va_arg(m->params, int);
-	if (m->flag & POINT && m->args.d == 0)
+	if (m->flag & POINT && m->preci == 0 && m->args.d == 0)
 		return ;
 	len = intlen(m->args.d, 0);
-	if (!(m->flag & MINUS))
-	{
-		m->fwidth -= len;
-		print_width(m);
-	}
 	m->len += len;
 	print_nbr_fd(m->args.d, m);
-	if (!(m->flag & MINUS) || m->fwidth == (int)len)
-		return ;
-	if (m->flag & MINUS && (int)len < m->fwidth)
-	{
-		m->fwidth -= len;
-		print_width(m);
-	}
-	m->fwidth = 0;
 }
 
 void	print_conv_chr(t_state_machine *m)
