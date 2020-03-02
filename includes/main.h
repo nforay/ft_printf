@@ -30,6 +30,8 @@ enum	e_state
 
 # define ALLCONV	"cspdiuxX%nfge"
 
+# define INT_MIN	-2147483648
+# define INT_MAX	2147483647
 # define B_TEN		"0123456789"
 # define B_HEX		"0123456789abcdef"
 # define B_MHEX		"0123456789ABCDEF"

@@ -33,29 +33,24 @@ void		print_int(int n, t_state_machine *m)
 
 void		print_nbr_fd(int n, t_state_machine *m)
 {
-	int	written;
-	int	size;
+	int		written;
+	int		size;
+	long	nbr;
 
+	nbr = n;
 	written = 0;
 	size = intlen(m->args.d, 0);
-	while (m->fwidth && !(m->flag & (MINUS)) &&
-		m->fwidth-- - (size >= m->preci ? size : m->preci) > 0 )
+	while (m->fwidth && !(m->flag & (MINUS)) && m->args.d > 0 && m->fwidth-- - (size >= m->preci ? size : m->preci) > 0)
 	{
 		ft_putchar_fd(n > 0 && m->flag & ZERO ? '0' : ' ', 1);
 		written++;
 	}
-	if (n == -2147483648)
-	{
-		write(m->fd, "-214748364", 10);
-		n = 8;
-		written += 10;
-	}
-	else if (n < 0)
+	if (n < 0 )
 	{
 		ft_putchar_fd('-', m->fd);
 		n = -n;
 	}
-	while (m->fwidth && m->args.d > 0 && !(m->flag & MINUS) && (size > m->preci ? size : m->preci) < m->fwidth--)
+	while (m->fwidth && !(m->flag & MINUS) && m->fwidth-- - (size >= m->preci ? size : m->preci) > 0)
 	{
 		ft_putchar_fd((m->flag & ZERO) ? '0' : ' ', 1);
 		written++;
@@ -86,7 +81,7 @@ void	print_width_s_null(t_state_machine *m)
 		m->fwidth -= 6;
 	while (m->fwidth > 0 && m->fwidth-- )
 	{
-		ft_putchar_fd(' ', 1);
+		ft_putchar_fd(' ', m->fd);
 		m->len++;
 	}
 }
@@ -117,7 +112,7 @@ void	print_width(t_state_machine *m)
 			m->fwidth--; //--
 		while (m->fwidth > 0 && m->fwidth--)
 		{
-			ft_putchar_fd(m->flag & ZERO && (m->flag & (X_CONV + XMAJ_CONV)) && !(m->flag & MINUS) ? '0' : ' ', 1);
+			ft_putchar_fd(m->flag & ZERO && (m->flag & (X_CONV + XMAJ_CONV + PER_CONV)) && !(m->flag & MINUS) ? '0' : ' ', m->fd);
 			m->len++;
 		}
 	}
@@ -125,10 +120,18 @@ void	print_width(t_state_machine *m)
 
 void	print_perc(t_state_machine *m)
 {
+	if (!(m->flag & MINUS) && m->flag & PER_CONV)
+	{
+		print_width(m);
+	}
 	if (m->flag & PER_CONV)
 	{
 		ft_putchar_fd('%', 1);
 		m->len++;
+	}
+	if (m->flag & MINUS && m->flag & PER_CONV)
+	{
+		print_width(m);
 	}
 }
 
@@ -148,10 +151,10 @@ void	print_conv(t_state_machine *m)
 		print_conv_uns(m);
 }
 
-int		ft_conv_base_len(int len, unsigned int nbr, char *base)
+int		ft_conv_base_len(t_state_machine *m, int len, unsigned int nbr, char *base)
 {
 	if (nbr / ft_strlen(base) != 0)
-		len = (ft_conv_base_len(len, (nbr / ft_strlen(base)), base));
+		len = (ft_conv_base_len(m, len, (nbr / ft_strlen(base)), base));
 	return (++len);
 }
 
@@ -159,14 +162,6 @@ void	ft_putnbr_base(t_state_machine *m, unsigned int nbr, char *base)
 {
 	if (nbr / 16 != 0)
 		ft_putnbr_base(m, (nbr / 16), base);
-	write(1, base + (nbr % 16), 1);
-	m->len++;
-}
-
-void	ft_put_pointer(t_state_machine *m, unsigned long nbr, char *base)
-{
-	if (nbr / 16 != 0)
-		ft_put_pointer(m, (nbr / 16), base);
 	write(1, base + (nbr % 16), 1);
 	m->len++;
 }
@@ -257,7 +252,7 @@ void	print_conv_uns(t_state_machine *m)
 	m->args.ux = (unsigned int)va_arg(m->params, unsigned int);
 	if (!(m->args.ux) && m->preci == 0 && m->flag & POINT && m->fwidth == 0)
 		return ;
-	strlen = ft_conv_base_len(0, m->args.ux, (m->flag & U_CONV) ? B_TEN : B_HEX);
+	strlen = ft_conv_base_len(m, 0, m->args.ux, (m->flag & U_CONV) ? B_TEN : B_HEX);
 	if (!(m->flag & MINUS))
 			print_width_uns(m, strlen);
 	if (m->flag & HASH)
@@ -282,42 +277,9 @@ void	print_conv_uns(t_state_machine *m)
 	else if (m->flag & XMAJ_CONV)
 		ft_putnbr_base(m, m->args.ux, B_MHEX);
 	else if (m->flag & U_CONV)
-		ft_putunsnbr_fd(m, m->args.ux, 1);
+		ft_putunsnbr_fd(m, m->args.ux, m->fd);
 	if (m->flag & MINUS)
 		print_width_uns(m, strlen);
-}
-
-void	print_conv_ptr(t_state_machine *m)
-{
-	int	strlen;
-	m->args.p = (unsigned long)va_arg(m->params, unsigned long);
-	if (m->args.p == 0)
-	{
-		ft_putstr_fd("(nil)", m->fd);
-		m->len += 5;
-		return ;
-	}
-	strlen = ft_conv_base_len(0, m->args.p, B_HEX);
-	if (!(m->flag & MINUS))
-	{
-		m->fwidth -= strlen + 2;
-		print_width(m);
-	}
-	ft_putstr_fd("0x", 1);
-	m->len += 2;
-	if (m->flag & POINT && strlen < m->preci)
-		while ((m->preci - strlen) > 0)
-		{
-			ft_putchar_fd('0', 1);
-			strlen++;
-			m->len++;
-		}
-	ft_put_pointer(m, m->args.p, B_HEX);
-	if (m->flag & MINUS)
-	{
-		m->fwidth -= strlen + 2;
-		print_width(m);
-	}
 }
 
 void	extract_aste(t_state_machine *m)
