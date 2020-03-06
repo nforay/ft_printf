@@ -180,6 +180,7 @@ void	print_conv_uns(t_state_machine *m)
 {
 	int	strlen;
 
+	m->preci = (m->preci < 0 ? 0 : m->preci);
 	strlen = 0;
 	m->args.ux = (unsigned int)va_arg(m->params, unsigned int);
 	if (!(m->args.ux) && m->preci == 0 && m->flag & POINT && m->fwidth == 0)
