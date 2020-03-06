@@ -59,6 +59,8 @@ SRCS	=	srcs/ft_atoi.c \
 			srcs/ft_lstmap.c \
 			srcs/ft_strstr.c \
 			srcs/ft_printf/ft_printf.c \
+			srcs/ft_printf/ft_printf_conv_int.c \
+			srcs/ft_printf/ft_printf_conv_ptr.c \
 			srcs/ft_printf/ft_printf_utils.c
 
 .c.o:

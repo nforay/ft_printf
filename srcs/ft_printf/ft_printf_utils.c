@@ -3,70 +3,14 @@
 
 int			intlen(int n, int len)
 {
-	long	tmp;
-
-	tmp = (long)n;
-	if (tmp <= 0)
+	if (n <= 0)
+		n = -n;
+	while (n)
 	{
 		len++;
-		tmp = -tmp;
-	}
-	while (tmp)
-	{
-		len++;
-		tmp /= 10;
+		n /= 10;
 	}
 	return (len);
-}
-
-void		print_int(int n, t_state_machine *m)
-{
-	if (n <= 9 && n >= 0)
-		ft_putchar_fd(n + 48, m->fd);
-		
-	else
-	{
-		print_int(n / 10, m);
-		ft_putchar_fd(n % 10 + 48, m->fd);
-	}
-}
-
-void		print_nbr_fd(int n, t_state_machine *m)
-{
-	int		written;
-	int		size;
-	long	nbr;
-
-	nbr = n;
-	written = 0;
-	size = intlen(m->args.d, 0);
-	while (m->fwidth && !(m->flag & (MINUS)) && m->args.d > 0 && m->fwidth-- - (size >= m->preci ? size : m->preci) > 0)
-	{
-		ft_putchar_fd(n > 0 && m->flag & ZERO ? '0' : ' ', 1);
-		written++;
-	}
-	if (n < 0 )
-	{
-		ft_putchar_fd('-', m->fd);
-		n = -n;
-	}
-	while (m->fwidth && !(m->flag & MINUS) && m->fwidth-- - (size >= m->preci ? size : m->preci) > 0)
-	{
-		ft_putchar_fd((m->flag & ZERO) ? '0' : ' ', 1);
-		written++;
-	}
-	while (m->preci && intlen(m->args.d, (m->args.d < 0 ? 0 : 1)) <= m->preci--)
-	{
-		ft_putchar_fd('0', 1);
-		written++;
-	}
-	m->len += written;
-	print_int(n, m);
-	while (m->fwidth && (m->flag & MINUS) && (size + written) < m->fwidth--)
-	{
-		ft_putchar_fd((m->flag & ZERO) ? '0' : ' ', 1);
-		m->len++;
-	}
 }
 
 void	print_width_s_null(t_state_machine *m)
@@ -196,18 +140,6 @@ void	print_conv_str(t_state_machine *m)
 		print_width(m);
 }
 
-void	print_conv_int(t_state_machine *m)
-{
-	size_t	len;
-
-	m->args.d = (int)va_arg(m->params, int);
-	if (m->flag & POINT && m->preci == 0 && m->args.d == 0)
-		return ;
-	len = intlen(m->args.d, 0);
-	m->len += len;
-	print_nbr_fd(m->args.d, m);
-}
-
 void	print_conv_chr(t_state_machine *m)
 {
 	m->args.c = (int)va_arg(m->params, int);
@@ -254,7 +186,7 @@ void	print_conv_uns(t_state_machine *m)
 		return ;
 	strlen = ft_conv_base_len(m, 0, m->args.ux, (m->flag & U_CONV) ? B_TEN : B_HEX);
 	if (!(m->flag & MINUS))
-			print_width_uns(m, strlen);
+		print_width_uns(m, strlen);
 	if (m->flag & HASH)
 	{
 		ft_putstr_fd("0x", 1);

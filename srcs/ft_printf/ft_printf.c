@@ -24,7 +24,7 @@ static int		conv(char *input, t_state_machine *machine)
 			print_perc(machine);
 			machine->state = LETTER;
 			machine->flag = 0;
-			machine->preci = 0;
+			machine->preci = -1;
 			machine->fwidth = 0;
 			return (1);
 		}
@@ -38,7 +38,7 @@ static int		flag(char *input, t_state_machine *machine)
 {
 	static char	*str_flag[NB_FLAG] = {F_HH, F_LL, F_MINUS, F_ZERO,
 		F_ASTER, F_HASH, F_SPACE, F_PLUS, F_H, F_L, F_POINT};
-	int			i;
+	int		i;
 
 	i = 0;
 	while (i < NB_FLAG)
@@ -81,12 +81,10 @@ int				ft_printf(char *format, ...)
 	int					ret;
 
 	ft_bzero(&machine, sizeof(machine));
+	machine.preci = -1;
 	va_start(machine.params, format);
 	machine.fd = 1;
 	machine.state = LETTER;
-	//machine.len = 0;
-	//machine.flag = 0;
-	//ft_bzero(&machine.buffer, 4096);
 	while (format != NULL && *format != '\0')
 	{
 		if ((ret = process[machine.state](format, &machine)) >= 0)
