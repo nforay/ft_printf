@@ -13,44 +13,11 @@ int			intlen(int n, int len)
 	return (len);
 }
 
-void	print_width_s_null(t_state_machine *m)
-{
-	int strlen;
-	
-	strlen = !(m->args.s) ? 6 : (int)ft_strlen(m->args.s);
-	(void)strlen;
-	if (!(m->flag & POINT))
-		m->fwidth -= 6;
-	else if ((m->flag & POINT) && m->preci > 5)
-		m->fwidth -= 6;
-	while (m->fwidth > 0 && m->fwidth-- )
-	{
-		ft_putchar_fd(' ', m->fd);
-		m->len++;
-	}
-}
-
 void	print_width(t_state_machine *m)
 {
-	int	strlen;
-
-	if ((m->flag & S_CONV) && !(m->args.s))
-		return (print_width_s_null(m));
-	if ((m->flag & S_CONV))
-		strlen = (int)ft_strlen(m->args.s);
 	if (m->fwidth)
 	{
-		if ((m->flag & S_CONV) && (strlen <= m->fwidth))
-			if (m->flag & POINT && m->preci < strlen)
-				m->fwidth = (m->fwidth - m->preci);
-			else
-				m->fwidth = (m->fwidth - strlen);
-		else if ((m->flag & S_CONV) && (strlen > m->fwidth))
-			if (m->flag & POINT)
-				m->fwidth = (m->fwidth - m->preci);
-			else
-				m->fwidth = 0;
-		else if (m->flag & C_CONV)
+		if (m->flag & C_CONV)
 			m->len += (m->fwidth - 1);
 		else if (m->flag & PER_CONV)
 			m->fwidth--; //--
@@ -81,8 +48,6 @@ void	print_perc(t_state_machine *m)
 
 void	print_conv(t_state_machine *m)
 {
-	if (!(m->flag & MINUS) && (m->flag & C_CONV))
-		print_width(m);
 	if (m->flag & C_CONV)
 		print_conv_chr(m);
 	else if (m->flag & S_CONV)
@@ -110,41 +75,24 @@ void	ft_putnbr_base(t_state_machine *m, unsigned int nbr, char *base)
 	m->len++;
 }
 
-void	print_conv_str(t_state_machine *m)
-{
-	m->args.s = (char *)va_arg(m->params, char *);
-	if (!(m->flag & MINUS) && (m->fwidth > 0))
-		print_width(m);
-	if (m->flag & POINT && m->args.s)
-		while (m->preci > 0 && m->preci-- && *m->args.s)
-		{
-			ft_putchar_fd(*m->args.s++, 1);
-			if (m->fwidth != 0)
-				m->fwidth--;
-			m->len++;
-		}
-	else
-	{
-		if (!(m->args.s) && !((m->flag & POINT) && m->preci < 6))
-		{
-			m->args.s = "(null)";
-			m->len += 6;
-		}
-		else if (m->args.s)
-			m->len += ft_strlen(m->args.s);
-		else if (!(m->args.s) && !(m->flag & POINT))
-			m->args.s = "";
-		ft_putstr_fd(m->args.s, 1);
-	}
-	if (m->flag & MINUS)
-		print_width(m);
-}
-
 void	print_conv_chr(t_state_machine *m)
 {
-	m->args.c = (int)va_arg(m->params, int);
+	(void)m;
+	m->args.c = va_arg(m->params, int);
+	while (!(m->flag & MINUS) && m->fwidth > 1)
+	{
+		ft_putchar_fd(' ', m->fd);
+		m->fwidth--;
+		m->len++;
+	}
 	ft_putchar_fd(m->args.c, 1);
 	m->len++;
+	while (m->flag & MINUS && m->fwidth > 1)
+	{
+		ft_putchar_fd(' ', m->fd);
+		m->fwidth--;
+		m->len++;
+	}
 }
 
 void	print_width_uns(t_state_machine *m, int len)
@@ -229,6 +177,6 @@ void	extract_aste(t_state_machine *m)
 		}
 	}
 	if (m->preci < 0)
-		m->preci = 0;
+		m->flag = m->flag & ~POINT;
 	m->flag &= ~ASTER;
 }
