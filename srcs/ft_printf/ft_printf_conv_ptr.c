@@ -26,7 +26,7 @@ static void	ft_put_pointer(t_state_machine *m, unsigned long nbr, char *base)
 	write(1, base + (nbr % 16), 1);
 }
 
-void		print_conv_ptr(t_state_machine *m)
+void	print_conv_ptr(t_state_machine *m)
 {
 	int	strlen;
 
@@ -49,8 +49,10 @@ void		print_conv_ptr(t_state_machine *m)
 			strlen++;
 			m->len++;
 		}
-	if (!(m->flag & POINT) && (strlen != m->preci + 2))
+	if (m->args.p)
 		ft_put_pointer(m, m->args.p, B_HEX);
+	else if ((m->args.p == 0 && m->args.p) || (m->flag & P_CONV) == m->flag)
+		ft_putchar_fd('0', m->fd);
 	if (m->flag & MINUS && m->args.p != 0)
 	{
 		m->fwidth -= strlen;

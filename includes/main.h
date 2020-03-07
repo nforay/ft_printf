@@ -77,7 +77,7 @@ enum	e_state
 
 typedef struct				s_args
 {
-	char						c;
+	char					c;
 	char					*s;
 	unsigned long			p;
 	int						d;

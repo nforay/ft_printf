@@ -3,6 +3,8 @@
 
 int		get_intlen(int n, int len)
 {
+	if (n == -2147483648)
+		return (10);
 	if (n <= 0)
 		n = -n;
 	while (n >= 10)
@@ -15,6 +17,13 @@ int		get_intlen(int n, int len)
 
 void	print_int(int n, t_state_machine *m)
 {
+	if (n == -2147483648)
+	{
+		ft_putstr_fd("214748364", m->fd);
+		m->fwidth -= 9;
+		m->len += 9;
+		n = 8;
+	}
 	if (n <= 9 && n >= 0)
 	{
 		ft_putchar_fd(n + 48, m->fd);
@@ -30,11 +39,8 @@ void	print_int(int n, t_state_machine *m)
 	}
 }
 
-void	print_nbr_fd(int n, t_state_machine *m)
+void	print_nbr_fd(int n, int size, t_state_machine *m)
 {
-	int	size;
-
-	size = get_intlen(m->args.d, 1);
 	if (n < 0)
 		n *= -1;
 	while ((m->preci - size) > 0)
@@ -109,7 +115,7 @@ void	print_conv_int(t_state_machine *m)
 		m->fwidth--;
 	}
 	print_width_int(m);
-	print_nbr_fd(m->args.d, m);
+	print_nbr_fd(m->args.d, size, m);
 	while (m->fwidth > 0)
 	{
 		ft_putchar_fd(' ', 1);

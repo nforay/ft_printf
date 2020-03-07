@@ -20,7 +20,7 @@ void	print_width(t_state_machine *m)
 		if (m->flag & C_CONV)
 			m->len += (m->fwidth - 1);
 		else if (m->flag & PER_CONV)
-			m->fwidth--; //--
+			m->fwidth--;
 		while (m->fwidth > 0 && m->fwidth--)
 		{
 			ft_putchar_fd(m->flag & ZERO && (m->flag & (X_CONV + XMAJ_CONV + PER_CONV)) && !(m->flag & MINUS) ? '0' : ' ', m->fd);
@@ -136,7 +136,7 @@ void	print_conv_uns(t_state_machine *m)
 	strlen = ft_conv_base_len(m, 0, m->args.ux, (m->flag & U_CONV) ? B_TEN : B_HEX);
 	if (!(m->flag & MINUS))
 		print_width_uns(m, strlen);
-	if (m->flag & HASH)
+	if (m->flag & HASH && m->preci > 2)
 	{
 		ft_putstr_fd("0x", 1);
 		m->len += 2;
