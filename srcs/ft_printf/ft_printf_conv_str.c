@@ -15,7 +15,7 @@ void	print_width_str(t_state_machine *m)
 		m->fwidth = (m->flag & POINT) ? m->fwidth - m->preci : 0;
 	while (m->fwidth > 0 && m->fwidth--)
 	{
-		if (m->flag & ZERO && !(m->flag & MINUS))
+		if (m->flag & ZERO && !(m->flag & MINUS) && !(m->flag & POINT))
 			ft_putchar_fd('0', m->fd);
 		else
 			ft_putchar_fd(' ', m->fd);

@@ -14,8 +14,6 @@ enum	e_state
 	END
 };
 
-# define DEBUG		0
-
 # define F_HH		"hh"
 # define F_LL		"ll"
 # define F_MINUS	"-"

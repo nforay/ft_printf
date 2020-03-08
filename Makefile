@@ -62,6 +62,7 @@ SRCS	=	srcs/ft_atoi.c \
 			srcs/ft_printf/ft_printf_conv_int.c \
 			srcs/ft_printf/ft_printf_conv_str.c \
 			srcs/ft_printf/ft_printf_conv_ptr.c \
+			srcs/ft_printf/ft_printf_conv_uns.c \
 			srcs/ft_printf/ft_printf_utils.c
 
 .c.o:
@@ -72,6 +73,8 @@ ${NAME}: ${OBJS}
 	ranlib ${NAME}
 
 all: ${NAME}
+
+bonus : ${NAME}
 
 clean:
 	rm -f ${OBJS} ${OBJSB}

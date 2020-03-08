@@ -51,9 +51,9 @@ void	print_conv_ptr(t_state_machine *m)
 		}
 	if (m->args.p)
 		ft_put_pointer(m, m->args.p, B_HEX);
-	else if ((m->args.p == 0 && m->args.p) || (m->flag & P_CONV) == m->flag)
+	else if ((m->fwidth > 0) || (m->flag & P_CONV) == m->flag)
 		ft_putchar_fd('0', m->fd);
-	if (m->flag & MINUS && m->args.p != 0)
+	if (m->flag & MINUS)
 	{
 		m->fwidth -= strlen;
 		print_width(m);

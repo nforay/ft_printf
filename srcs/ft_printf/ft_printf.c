@@ -6,6 +6,8 @@ static int		error(char *input, t_state_machine *machine)
 	(void)input;
 	machine->state = LETTER;
 	machine->flag = 0;
+	machine->preci = -1;
+	machine->fwidth = 0;
 	return (1);
 }
 
@@ -21,7 +23,6 @@ static int		conv(char *input, t_state_machine *machine)
 		{
 			machine->flag |= (1 << i) << 12;
 			print_conv(machine);
-			print_perc(machine);
 			machine->state = LETTER;
 			machine->flag = 0;
 			machine->preci = -1;
@@ -38,17 +39,19 @@ static int		flag(char *input, t_state_machine *machine)
 {
 	static char	*str_flag[NB_FLAG] = {F_HH, F_LL, F_MINUS, F_ZERO,
 		F_ASTER, F_HASH, F_SPACE, F_PLUS, F_H, F_L, F_POINT};
-	int		i;
+	int			i;
 
-	i = 0;
-	while (i < NB_FLAG)
+	i = -1;
+	while (++i < NB_FLAG)
 	{
 		if (!(machine->flag & POINT) && (input[0] > '0' && input[0] <= '9')
 				&& (machine->fwidth = ft_atoi(input)))
 			return (intlen(machine->fwidth, 0));
-		if ((machine->flag & POINT) && (ft_isdigit(input[0]))
-				&& (machine->preci = ft_atoi(input)))
-			return (intlen(machine->preci, 0));
+		if ((machine->flag & POINT) && (ft_isdigit(input[0])))
+		{
+			machine->preci = ft_atoi(input);
+			return (!(machine->preci) ? 1 : intlen(machine->preci, 0));
+		}
 		if (ft_strncmp(input, str_flag[i], (i < 2 ? 2 : 1)) == FALSE)
 		{
 			machine->flag |= (1 << i);
@@ -56,7 +59,6 @@ static int		flag(char *input, t_state_machine *machine)
 				extract_aste(machine);
 			return (i < 2 ? 2 : 1);
 		}
-		i++;
 	}
 	machine->state = CONV;
 	return (0);
