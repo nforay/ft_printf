@@ -1,7 +1,6 @@
 #ifndef MAIN_H
 # define MAIN_H
 
-# include <stdio.h>
 # include <stdarg.h>
 # include <stddef.h>
 # include <limits.h>
@@ -86,29 +85,21 @@ typedef struct				s_args
 	double					e;
 	signed char				hhd;
 	signed char				hhi;
-	unsigned char			hhu;
-	unsigned char			hhx;
-	unsigned char			hhxmaj;
+	unsigned char			hhux;
 	signed char				*hhn;
 	long long int			lld;
 	long long int			lli;
-	unsigned long long int	llu;
-	unsigned long long int	llx;
-	unsigned long long int	llxmaj;
+	unsigned long long int	llux;
 	long long int			*lln;
 	short int				hd;
 	short int				hi;
-	unsigned short int		hu;
-	unsigned short int		hx;
-	unsigned short int		hxmaj;
+	unsigned short int		hux;
 	short int				*hn;
 	wchar_t					lc;
 	wchar_t					*ls;
 	long int				ld;
 	long int				li;
-	unsigned long int		lu;
-	unsigned long int		lx;
-	unsigned long int		lxmaj;
+	unsigned long int		lux;
 	long int				*ln;
 }							t_args;
 
@@ -132,8 +123,13 @@ int		ft_printf(char *format, ...);
 void	extract_aste(t_state_machine *m);
 void	print_perc(t_state_machine *m);
 void	print_conv(t_state_machine *m);
+void	print_conv_chr(t_state_machine *m);
 void	print_conv_ptr(t_state_machine *m);
 void	print_conv_uns(t_state_machine *m);
+void	print_conv_uns_hh(t_state_machine *m);
+void	print_conv_uns_ll(t_state_machine *m);
+void	print_conv_uns_h(t_state_machine *m);
+void	print_conv_uns_l(t_state_machine *m);
 void	print_conv_chr(t_state_machine *m);
 void	print_conv_int(t_state_machine *m);
 void	print_conv_int_hh(t_state_machine *m);
@@ -141,6 +137,7 @@ void	print_conv_int_ll(t_state_machine *m);
 void	print_conv_int_h(t_state_machine *m);
 void	print_conv_int_l(t_state_machine *m);
 void	print_conv_str(t_state_machine *m);
+void	print_conv_n(t_state_machine *m);
 int		intlen(int n, int len);
 
 #endif

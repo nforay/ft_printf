@@ -8,6 +8,8 @@ static int		error(char *input, t_state_machine *machine)
 	machine->flag = 0;
 	machine->preci = -1;
 	machine->fwidth = 0;
+	ft_putchar_fd(input[0], machine->fd);
+	machine->len++;
 	return (1);
 }
 
