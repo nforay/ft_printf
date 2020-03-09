@@ -1,4 +1,16 @@
-#include "main.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf_conv_ptr.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/03/09 17:14:09 by nforay            #+#    #+#             */
+/*   Updated: 2020/03/09 19:24:26 by nforay           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "ft_printf.h"
 #include "libft.h"
 
 static int	ft_conv_base_len(int len, unsigned long nbr)
@@ -26,7 +38,20 @@ static void	ft_put_pointer(t_state_machine *m, unsigned long nbr, char *base)
 	write(1, base + (nbr % 16), 1);
 }
 
-void	print_conv_ptr(t_state_machine *m)
+static void	print_conv_ptr_end(t_state_machine *m, int strlen)
+{
+	if (m->args.p)
+		ft_put_pointer(m, m->args.p, B_HEX);
+	else if ((m->fwidth > 0) || (m->flag & P_CONV) == m->flag)
+		ft_putchar_fd('0', m->fd);
+	if (m->flag & MINUS)
+	{
+		m->fwidth -= strlen;
+		print_width(m);
+	}
+}
+
+void		print_conv_ptr(t_state_machine *m)
 {
 	int	strlen;
 
@@ -49,13 +74,5 @@ void	print_conv_ptr(t_state_machine *m)
 			strlen++;
 			m->len++;
 		}
-	if (m->args.p)
-		ft_put_pointer(m, m->args.p, B_HEX);
-	else if ((m->fwidth > 0) || (m->flag & P_CONV) == m->flag)
-		ft_putchar_fd('0', m->fd);
-	if (m->flag & MINUS)
-	{
-		m->fwidth -= strlen;
-		print_width(m);
-	}
+	print_conv_ptr_end(m, strlen);
 }

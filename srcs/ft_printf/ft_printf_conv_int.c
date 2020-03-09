@@ -1,59 +1,19 @@
-#include "main.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf_conv_int.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/03/09 17:13:02 by nforay            #+#    #+#             */
+/*   Updated: 2020/03/09 18:47:24 by nforay           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "ft_printf.h"
 #include "libft.h"
 
-int		get_intlen(int n, int len)
-{
-	if (n == -2147483648)
-		return (10);
-	if (n <= 0)
-		n = -n;
-	while (n >= 10)
-	{
-		len++;
-		n /= 10;
-	}
-	return (len);
-}
-
-void	print_int(int n, t_state_machine *m)
-{
-	if (n == -2147483648)
-	{
-		ft_putstr_fd("214748364", m->fd);
-		m->fwidth -= 9;
-		m->len += 9;
-		n = 8;
-	}
-	if (n <= 9 && n >= 0)
-	{
-		ft_putchar_fd(n + 48, m->fd);
-		m->len++;
-		m->fwidth--;
-	}
-	else
-	{
-		print_int(n / 10, m);
-		ft_putchar_fd(n % 10 + 48, m->fd);
-		m->len++;
-		m->fwidth--;
-	}
-}
-
-void	print_nbr_fd(int n, int size, t_state_machine *m)
-{
-	if (n < 0)
-		n *= -1;
-	while ((m->preci - size) > 0)
-	{
-		ft_putchar_fd('0', 1);
-		m->len++;
-		m->preci--;
-		m->fwidth--;
-	}
-	print_int(n, m);
-}
-
-void	print_width_int(t_state_machine *m)
+static void	print_width_int(t_state_machine *m)
 {
 	if (m->flag & (PLUS + SPACE) && m->args.d >= 0)
 		m->fwidth--;
@@ -66,10 +26,8 @@ void	print_width_int(t_state_machine *m)
 		}
 	if (m->fwidth - m->preci > 0 && !(m->flag & MINUS))
 	{
-		if (m->args.d < 0 && m->flag & ZERO)
+		if (m->flag & ZERO)
 			ft_putchar_fd('0', m->fd);
-		else if (m->flag & ZERO)
-			ft_putchar_fd((m->args.d < 0) ? '-' : '0', m->fd);
 		else
 			ft_putchar_fd((m->args.d < 0) ? '-' : ' ', m->fd);
 		m->fwidth--;
@@ -83,7 +41,7 @@ void	print_width_int(t_state_machine *m)
 	}
 }
 
-void	print_width_int_empty(t_state_machine *m)
+static void	print_width_int_empty(t_state_machine *m)
 {
 	if (m->flag & (PLUS + SPACE))
 	{
@@ -129,7 +87,19 @@ static void	print_hash(t_state_machine *m)
 	}
 }
 
-void	print_conv_int(t_state_machine *m)
+static void	print_conv_int_end(t_state_machine *m, int size)
+{
+	print_hash(m);
+	ft_printf_nbr_int_fd(m->args.d, size, m);
+	while (m->fwidth > 0)
+	{
+		ft_putchar_fd(' ', 1);
+		m->len++;
+		m->fwidth--;
+	}
+}
+
+void		print_conv_int(t_state_machine *m)
 {
 	int	size;
 
@@ -152,12 +122,5 @@ void	print_conv_int(t_state_machine *m)
 		m->len++;
 		m->fwidth--;
 	}
-	print_hash(m);
-	print_nbr_fd(m->args.d, size, m);
-	while (m->fwidth > 0)
-	{
-		ft_putchar_fd(' ', 1);
-		m->len++;
-		m->fwidth--;
-	}
+	print_conv_int_end(m, size);
 }

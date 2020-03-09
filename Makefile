@@ -59,18 +59,29 @@ SRCS	=	srcs/ft_atoi.c \
 			srcs/ft_lstmap.c \
 			srcs/ft_strstr.c \
 			srcs/ft_printf/ft_printf.c \
+			srcs/ft_printf/ft_printf_conv.c \
 			srcs/ft_printf/ft_printf_conv_int.c \
+			srcs/ft_printf/ft_printf_conv_int_utils.c \
 			srcs/ft_printf/ft_printf_conv_int_hh.c \
+			srcs/ft_printf/ft_printf_conv_int_hh_utils.c \
 			srcs/ft_printf/ft_printf_conv_int_ll.c \
+			srcs/ft_printf/ft_printf_conv_int_ll_utils.c \
 			srcs/ft_printf/ft_printf_conv_int_h.c \
+			srcs/ft_printf/ft_printf_conv_int_h_utils.c \
 			srcs/ft_printf/ft_printf_conv_int_l.c \
+			srcs/ft_printf/ft_printf_conv_int_l_utils.c \
 			srcs/ft_printf/ft_printf_conv_str.c \
 			srcs/ft_printf/ft_printf_conv_ptr.c \
 			srcs/ft_printf/ft_printf_conv_uns.c \
+			srcs/ft_printf/ft_printf_conv_uns_utils.c \
 			srcs/ft_printf/ft_printf_conv_uns_hh.c \
+			srcs/ft_printf/ft_printf_conv_uns_hh_utils.c \
 			srcs/ft_printf/ft_printf_conv_uns_ll.c \
+			srcs/ft_printf/ft_printf_conv_uns_ll_utils.c \
 			srcs/ft_printf/ft_printf_conv_uns_h.c \
+			srcs/ft_printf/ft_printf_conv_uns_h_utils.c \
 			srcs/ft_printf/ft_printf_conv_uns_l.c \
+			srcs/ft_printf/ft_printf_conv_uns_l_utils.c \
 			srcs/ft_printf/ft_printf_conv_n.c \
 			srcs/ft_printf/ft_printf_utils.c
 

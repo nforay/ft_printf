@@ -1,7 +1,19 @@
-#include "main.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf_utils.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/03/09 17:15:00 by nforay            #+#    #+#             */
+/*   Updated: 2020/03/09 19:39:54 by nforay           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "ft_printf.h"
 #include "libft.h"
 
-int			intlen(int n, int len)
+int		intlen(int n, int len)
 {
 	if (n <= 0)
 		n = -n;
@@ -32,108 +44,6 @@ void	print_perc(t_state_machine *m)
 		}
 }
 
-void	print_conv_nolength(t_state_machine *m)
-{
-	if (m->flag & C_CONV)
-		print_conv_chr(m);
-	else if (m->flag & S_CONV)
-		print_conv_str(m);
-	else if (m->flag & P_CONV)
-		print_conv_ptr(m);
-	else if (m->flag & (D_CONV | I_CONV))
-		print_conv_int(m);
-	else if (m->flag & (U_CONV | X_CONV | XMAJ_CONV))
-		print_conv_uns(m);
-	else if (m->flag & PER_CONV)
-		print_perc(m);
-	else if (m->flag & N_CONV)
-		print_conv_n(m);
-}
-
-void	print_conv_hh(t_state_machine *m)
-{
-	if (m->flag & C_CONV)
-		print_conv_chr(m);
-	else if (m->flag & S_CONV)
-		print_conv_str(m);
-	else if (m->flag & P_CONV)
-		print_conv_ptr(m);
-	else if (m->flag & (D_CONV | I_CONV))
-		print_conv_int_hh(m);
-	else if (m->flag & (U_CONV | X_CONV | XMAJ_CONV))
-		print_conv_uns_hh(m);
-	else if (m->flag & PER_CONV)
-		print_perc(m);
-	else if (m->flag & N_CONV)
-		print_conv_n(m);
-}
-
-void	print_conv_ll(t_state_machine *m)
-{
-	if (m->flag & C_CONV)
-		print_conv_chr(m);
-	else if (m->flag & S_CONV)
-		print_conv_str(m);
-	else if (m->flag & P_CONV)
-		print_conv_ptr(m);
-	else if (m->flag & (D_CONV | I_CONV))
-		print_conv_int_ll(m);
-	else if (m->flag & (U_CONV | X_CONV | XMAJ_CONV))
-		print_conv_uns_ll(m);
-	else if (m->flag & PER_CONV)
-		print_perc(m);
-	else if (m->flag & N_CONV)
-		print_conv_n(m);
-}
-
-void	print_conv_h(t_state_machine *m)
-{
-	if (m->flag & C_CONV)
-		print_conv_chr(m);
-	else if (m->flag & S_CONV)
-		print_conv_str(m);
-	else if (m->flag & P_CONV)
-		print_conv_ptr(m);
-	else if (m->flag & (D_CONV | I_CONV))
-		print_conv_int_h(m);
-	else if (m->flag & (U_CONV | X_CONV | XMAJ_CONV))
-		print_conv_uns_h(m);
-	else if (m->flag & PER_CONV)
-		print_perc(m);
-}
-
-void	print_conv_l(t_state_machine *m)
-{
-	if (m->flag & C_CONV)
-		print_conv_chr(m);
-	else if (m->flag & S_CONV)
-		print_conv_str(m);
-	else if (m->flag & P_CONV)
-		print_conv_ptr(m);
-	else if (m->flag & (D_CONV | I_CONV))
-		print_conv_int_l(m);
-	else if (m->flag & (U_CONV | X_CONV | XMAJ_CONV))
-		print_conv_uns_l(m);
-	else if (m->flag & PER_CONV)
-		print_perc(m);
-	else if (m->flag & N_CONV)
-		print_conv_n(m);
-}
-
-void	print_conv(t_state_machine *m)
-{
-	if (m->flag & HH)
-		print_conv_hh(m);
-	else if (m->flag & LL)
-		print_conv_ll(m);
-	else if (m->flag & H)
-		print_conv_h(m);
-	else if (m->flag & L)
-		print_conv_l(m);
-	else
-		print_conv_nolength(m);
-}
-
 void	print_conv_chr(t_state_machine *m)
 {
 	(void)m;
@@ -153,6 +63,20 @@ void	print_conv_chr(t_state_machine *m)
 		m->fwidth--;
 		m->len++;
 	}
+}
+
+void	print_conv(t_state_machine *m)
+{
+	if (m->flag & HH)
+		print_conv_hh(m);
+	else if (m->flag & LL)
+		print_conv_ll(m);
+	else if (m->flag & H)
+		print_conv_h(m);
+	else if (m->flag & L)
+		print_conv_l(m);
+	else
+		print_conv_nolength(m);
 }
 
 void	extract_aste(t_state_machine *m)
