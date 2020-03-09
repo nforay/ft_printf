@@ -4,6 +4,7 @@
 # include <stdio.h>
 # include <stdarg.h>
 # include <stddef.h>
+# include <limits.h>
 
 enum	e_state
 {
@@ -28,8 +29,6 @@ enum	e_state
 
 # define ALLCONV	"cspdiuxX%nfge"
 
-# define INT_MIN	-2147483648
-# define INT_MAX	2147483647
 # define B_TEN		"0123456789"
 # define B_HEX		"0123456789abcdef"
 # define B_MHEX		"0123456789ABCDEF"
@@ -137,6 +136,10 @@ void	print_conv_ptr(t_state_machine *m);
 void	print_conv_uns(t_state_machine *m);
 void	print_conv_chr(t_state_machine *m);
 void	print_conv_int(t_state_machine *m);
+void	print_conv_int_hh(t_state_machine *m);
+void	print_conv_int_ll(t_state_machine *m);
+void	print_conv_int_h(t_state_machine *m);
+void	print_conv_int_l(t_state_machine *m);
 void	print_conv_str(t_state_machine *m);
 int		intlen(int n, int len);
 
