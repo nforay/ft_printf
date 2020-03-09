@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/04 14:08:26 by nforay            #+#    #+#             */
-/*   Updated: 2020/03/09 19:58:36 by nforay           ###   ########.fr       */
+/*   Updated: 2020/03/09 20:54:59 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define FT_PRINTF_H
 
 # include <stdarg.h>
-# include <stddef.h>
 # include <limits.h>
 
 enum	e_state
@@ -89,8 +88,6 @@ typedef struct				s_args
 	short int				hd;
 	unsigned short int		hux;
 	short int				*hn;
-	wchar_t					lc;
-	wchar_t					*ls;
 	long int				ld;
 	unsigned long int		lux;
 	long int				*ln;
