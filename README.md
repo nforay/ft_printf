@@ -1,3 +1,4 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/8990d84117844fdcb01e555e822cca94)](https://www.codacy.com/manual/nforay/ft_printf?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nforay/ft_printf&amp;utm_campaign=Badge_Grade)
 # ft_printf
 *This project is pretty straight forward. You will recode printf.*
 
